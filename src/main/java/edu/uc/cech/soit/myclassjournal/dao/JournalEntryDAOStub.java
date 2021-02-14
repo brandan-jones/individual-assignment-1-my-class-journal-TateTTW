@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * DAO used for accessing Journal Entry records in the underlying database
+ */
 @Component
 public class JournalEntryDAOStub implements IJournalEntryDAO {
 
