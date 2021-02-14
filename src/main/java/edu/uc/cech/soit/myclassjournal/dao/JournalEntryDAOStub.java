@@ -16,6 +16,7 @@ public class JournalEntryDAOStub implements IJournalEntryDAO {
      */
     @Override
     public void save(JournalEntry journalEntry) {
+        journalEntry.setEntryId(journalEntries.size());
         journalEntries.put(journalEntry.getEntryId(), journalEntry);
     }
 
