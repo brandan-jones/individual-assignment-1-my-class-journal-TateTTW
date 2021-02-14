@@ -102,139 +102,139 @@
     </style>
 </head>
 <body>
-<h1>My Journal</h1>
-<div id="dashDiv"></div>
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <input id="textBox"/>
-        <button style="margin: 10px;" id="submitBtn">Submit</button>
+    <h1>My Journal</h1>
+    <div id="dashDiv"></div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <input id="textBox"/>
+            <button style="margin: 10px;" id="submitBtn">Submit</button>
+        </div>
     </div>
-</div>
-<script>
-    const modal = document.getElementById("myModal");
+    <script>
+        const modal = document.getElementById("myModal");
 
-    function addPackagePanels(journalEntries) {
-        buildDashboard.call(this,journalEntries);
+        function addPackagePanels(journalEntries) {
+            buildDashboard.call(this,journalEntries);
 
-        let row = 0;
-        let col = 1;
-        for(let i=0; i<journalEntries.length; i++){
-            const entry = journalEntries[i];
-            const panel = {
-                'row': row,
-                'col': col++,
-                'sizeX': 1,
-                'sizeY': 1,
-                header: '<div class="panelHeader">' + entry.date + '</div>',
-                content: '<div class="panelContent">' + entry.notes + '</div>'
-            };
+            let row = 0;
+            let col = 1;
+            for(let i=0; i<journalEntries.length; i++){
+                const entry = journalEntries[i];
+                const panel = {
+                    'row': row,
+                    'col': col++,
+                    'sizeX': 1,
+                    'sizeY': 1,
+                    header: '<div class="panelHeader">' + entry.date + '</div>',
+                    content: '<div class="panelContent">' + entry.notes + '</div>'
+                };
 
-            this.dashboard.addPanel(panel);
+                this.dashboard.addPanel(panel);
 
-            if(col>3){
-                row++;
-                col = 0;
+                if(col>3){
+                    row++;
+                    col = 0;
+                }
             }
         }
-    }
 
-    function getAllJournalEntries() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', '/getAllJournalEntries', true);
+        function getAllJournalEntries() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/getAllJournalEntries', true);
 
-        xhr.onload = function (result) {
-            if(result && result.target && result.target.response){
-                addPackagePanels.call(this,JSON.parse(result.target.response));
-            }
-        }.bind(this);
+            xhr.onload = function (result) {
+                if(result && result.target && result.target.response){
+                    addPackagePanels.call(this,JSON.parse(result.target.response));
+                }
+            }.bind(this);
 
-        xhr.send(null);
-    }
+            xhr.send(null);
+        }
 
-    function submitJournalEntry() {
-        const textBox = document.getElementById("textBox");
+        function submitJournalEntry() {
+            const textBox = document.getElementById("textBox");
 
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/addJournalEntry/'+encodeURIComponent(textBox.value), true);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/addJournalEntry/'+encodeURIComponent(textBox.value), true);
 
-        xhr.onload = function (result) {
-            getAllJournalEntries.call(this);
-        }.bind(this);
+            xhr.onload = function (result) {
+                getAllJournalEntries.call(this);
+            }.bind(this);
 
-        xhr.send(null);
+            xhr.send(null);
 
-        modal.style.display = "none";
-        textBox.value = '';
-    }
-
-    function buildModelInputs(){
-        const span = document.getElementsByClassName("close")[0];
-
-        const textBox = new ej.inputs.TextBox({
-            placeholder: 'Write a journal entry.',
-            floatLabelType: 'Auto'
-        });
-        textBox.appendTo('#textBox')
-
-        const button = new ej.buttons.Button({isPrimary: true});
-        button.appendTo('#submitBtn');
-        button.element.onclick = submitJournalEntry.bind(this);
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
             modal.style.display = "none";
             textBox.value = '';
-        }.bind(this);
+        }
 
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
+        function buildModelInputs(){
+            const span = document.getElementsByClassName("close")[0];
+
+            const textBox = new ej.inputs.TextBox({
+                placeholder: 'Write a journal entry.',
+                floatLabelType: 'Auto'
+            });
+            textBox.appendTo('#textBox')
+
+            const button = new ej.buttons.Button({isPrimary: true});
+            button.appendTo('#submitBtn');
+            button.element.onclick = submitJournalEntry.bind(this);
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
                 modal.style.display = "none";
                 textBox.value = '';
-            }
-        }.bind(this);
-    }
+            }.bind(this);
 
-    function buildDashboard(journalEntries) {
-        let addEntryHeader = '<div class="addEntryHeader">Click  <i class="fa fa-plus" style="margin:0px 5px; color:#68d391;"></i>  to add first package </div>';
-
-        if(journalEntries && journalEntries.length > 0){
-            addEntryHeader = '<div></div>';
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                    textBox.value = '';
+                }
+            }.bind(this);
         }
 
-        let addJournalNode = {
-            'sizeX': 1, 'sizeY': 1, 'row': 0, 'col': 0,
-            header: addEntryHeader,
-            content: '<div><i id="addJournalPanel" class="addEntryContent fa fa-plus"></i></div>'
-        };
+        function buildDashboard(journalEntries) {
+            let addEntryHeader = '<div class="addEntryHeader">Click  <i class="fa fa-plus" style="margin:0px 5px; color:#68d391;"></i>  to add first package </div>';
 
-        if(this.dashboard)
-            this.dashboard.destroy();
-
-        this.dashboard = new ej.layouts.DashboardLayout({
-            cellSpacing:[5,5],
-            columns: 4,
-            cellAspectRatio: 50 / 30,
-            allowDragging: false,
-            panels: [addJournalNode]
-        });
-        dashboard.appendTo("#dashDiv");
-
-        addJournalNode = document.getElementById('addJournalPanel');
-        if(addJournalNode) {
-            addJournalNode.onclick = function () {
-                modal.style.display = "block";
+            if(journalEntries && journalEntries.length > 0){
+                addEntryHeader = '<div></div>';
             }
+
+            let addJournalNode = {
+                'sizeX': 1, 'sizeY': 1, 'row': 0, 'col': 0,
+                header: addEntryHeader,
+                content: '<div><i id="addJournalPanel" class="addEntryContent fa fa-plus"></i></div>'
+            };
+
+            if(this.dashboard)
+                this.dashboard.destroy();
+
+            this.dashboard = new ej.layouts.DashboardLayout({
+                cellSpacing:[5,5],
+                columns: 4,
+                cellAspectRatio: 50 / 30,
+                allowDragging: false,
+                panels: [addJournalNode]
+            });
+            dashboard.appendTo("#dashDiv");
+
+            addJournalNode = document.getElementById('addJournalPanel');
+            if(addJournalNode) {
+                addJournalNode.onclick = function () {
+                    modal.style.display = "block";
+                }
+            }
+
         }
 
-    }
+        ej.base.enableRipple(true);
 
-    ej.base.enableRipple(true);
+        buildModelInputs();
+        getAllJournalEntries.call(this);
 
-    buildModelInputs();
-    getAllJournalEntries.call(this);
-
-</script>
+    </script>
 </body>
 </html>
